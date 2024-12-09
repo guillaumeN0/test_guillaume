@@ -21,9 +21,10 @@ jobs:
         run: pip install wemake-python-styleguide
 
       - name: Run wemake-python-styleguide
-        uses: wemake-services/wemake-python-styleguide@master
-        continue-on-error: false
+        uses: wemake-services/wemake-python-styleguide
         with:
           reporter: 'github-pr-review'
+          path: '.'
+          verbose: 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
