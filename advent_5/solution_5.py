@@ -2,7 +2,7 @@ import csv,re
 import numpy as np
 
 
-with open("input.txt","r",encoding="utf-8") as f:
+with open("input2.txt","r",encoding="utf-8") as f:
     reader=csv.reader(f,delimiter=',')
     lines_list=[row for row in reader]
     
@@ -17,7 +17,7 @@ for line in lines_list:
     else:
         updates_list.append(line)
     
-middle_true=0
+'''middle_true=0
 for update in updates_list:
     is_fine=True
     for rule in instructions_list:
@@ -31,5 +31,57 @@ for update in updates_list:
         middle_true+=int(update[len(update)//2 ])
         
         
-print(middle_true)
+print(middle_true)'''
+
+def ordenar(vertices, reglas):
+    n=len(vertices)
+    grafo=np.zeros((n,n),dtype=int)
+    for i in range(n):
+        vertice=vertices[i]
+        for regla in reglas:
+            if vertice == regla[0]:
+                segundo_vertice=regla[1]
+                if segundo_vertice in vertices:
+                    grafo[i,vertices.index(segundo_vertice)]=1
+                    
+    print(grafo)
+    grafo_completo=grafo.copy()
+    visitados=np.zeros(n,dtype=int)
+    def relation_ordre (ancestros_indices, actual_indice):
+        for j in range(n):
+            if grafo[actual_indice,j]==1 and visitados[j]==0:
+                visitados[j]=1
+                relation_ordre(ancestros_indices.append(actual_indice),j)
+                for i in ancestros_indices:
+                    grafo_completo[i,j]=1
+                    
+    def ordernación_recursiva(indices_vertices_actuales):
+        if len(indices_vertices_actuales)==0:
+            return []
+        separacion_max=-1
+        indice_separacion_max=-1
+        for i in indices_vertices_actuales:
+            separacion=grafo_completo[i,indices_vertices_actuales].sum()
+            +grafo_completo[indices_vertices_actuales,i].sum()
+            if separacion > separacion_max:
+                separacion_max=separacion
+                indice_separacion_max=i
+        indices_vertices_inferiores=[]
+        indices_vertices_superiores=[]
+        for i in indices_vertices_actuales:
+            if grafo_completo[i,indice_separacion_max]==1:
+                indices_vertices_inferiores.append(i)
+            if grafo_completo[indice_separacion_max,i]==1:
+                indices_vertices_superiores.append(i)
+                
+        return ordernación_recursiva(indices_vertices_inferiores) + [indice_separacion_max] + ordernación_recursiva(indices_vertices_superiores)
+                    
+    print(grafo_completo)
+    indices_ordenados = ordernación_recursiva(range(n))
+    return [vertices[i] for i in indices_ordenados]
+    
+    
+print(updates_list[0],instructions_list)
+ordenar(updates_list[0],instructions_list) 
+    
         
