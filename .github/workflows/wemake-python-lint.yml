@@ -29,5 +29,6 @@ jobs:
         with:
           reporter: 'github-pr-check'
           path: '.'
+          format: '%(path)s:%(row)d:%(col)d: %(code)s %(text)s'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
