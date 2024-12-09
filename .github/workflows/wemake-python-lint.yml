@@ -1,0 +1,28 @@
+name: wemake-python-styleguide
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - '**.py'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install wemake-python-styleguide
+        run: pip install wemake-python-styleguide
+
+      - name: Run wemake-python-styleguide
+        uses: wemake-services/wemake-python-styleguide@master
+        with:
+          reporter: 'github-pr-review'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
