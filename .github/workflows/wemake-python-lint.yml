@@ -6,6 +6,10 @@ on:
     paths:
       - '**.py'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -25,6 +29,5 @@ jobs:
         with:
           reporter: 'github-pr-review'
           path: '.'
-          verbose: 'true'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
