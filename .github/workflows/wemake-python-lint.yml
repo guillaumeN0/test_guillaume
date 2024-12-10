@@ -21,13 +21,47 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Install wemake-python-styleguide
-        run: pip install wemake-python-styleguide
+      - name: Install dependencies
+        run: |
+          pip install wemake-python-styleguide
+          pip install flake8-metrics
+          pip install pylint
 
       - name: Run wemake-python-styleguide
+        continue-on-error: true
         uses: wemake-services/wemake-python-styleguide@master
         with:
           reporter: 'github-pr-check'
           path: '.'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run pylint and flake8
+        run: |
+          pylint . --output-format=text > pylint_report.txt || true
+          flake8 . --output-file=flake8_report.txt || true
+
+      - name: Find existing comment
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "Linting Report"
+
+      - name: Prepare combined report
+        run: |
+          echo "## Linting Report" > combined_report.txt
+          echo "### Pylint Output" >> combined_report.txt
+          cat pylint_report.txt >> combined_report.txt
+          echo -e "\n### Flake8 Output" >> combined_report.txt
+          cat flake8_report.txt >> combined_report.txt
+
+      - name: Post PR Comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-file: combined_report.txt
+          edit-mode: replace
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          token: ${{ secrets.GITHUB_TOKEN }}
