@@ -1,4 +1,5 @@
-import csv, re
+import csv
+import re
 import numpy as np
 
 with open("input.txt", "r", encoding="utf-8") as f:
