@@ -1,5 +1,7 @@
-import csv, re
+import csv
+import re
 import numpy as np
+from itertools import groupby
 
 first_list = []
 second_list = []
@@ -17,8 +19,6 @@ sorted_first_list.sort()
 sorted_second_list.sort()
 
 print(abs(sorted_second_list - sorted_first_list).sum())
-
-from itertools import groupby
 
 frequencies = groupby(sorted_second_list)
 keys = []
