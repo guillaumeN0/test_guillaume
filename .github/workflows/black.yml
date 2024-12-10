@@ -18,4 +18,6 @@ jobs:
 
       - name: Black Code Format
         uses: antoniogonzalezsuarez/black-action@v0.1.0-rc1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
             
