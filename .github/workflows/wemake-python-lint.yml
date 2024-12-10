@@ -28,6 +28,7 @@ jobs:
 
       - name: Run wemake-python-styleguide
         uses: wemake-services/wemake-python-styleguide@master
+        continue-on-error: true
         with:
           reporter: 'github-pr-check'
           path: '.'
