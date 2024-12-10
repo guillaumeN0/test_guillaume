@@ -24,7 +24,6 @@ jobs:
       - name: Install dependencies
         run: |
           pip install wemake-python-styleguide
-          pip install flake8-metrics
           pip install pylint
 
       - name: Run wemake-python-styleguide
