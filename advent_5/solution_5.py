@@ -44,19 +44,22 @@ def ordenar(vertices, reglas):
                 if segundo_vertice in vertices:
                     grafo[i,vertices.index(segundo_vertice)]=1
                     
-    print(grafo)
+    #print(grafo)
     grafo_completo=grafo.copy()
     visitados=np.zeros(n,dtype=int)
     def relation_ordre (ancestros_indices, actual_indice):
+        #print('current summit',actual_indice)
         for j in range(n):
             if grafo[actual_indice,j]==1 and visitados[j]==0:
                 visitados[j]=1
-                relation_ordre(ancestros_indices.append(actual_indice),j)
-                for i in ancestros_indices:
+                ancestros_indices.append(actual_indice)
+                relation_ordre(ancestros_indices,j)
+                for i in ancestros_indices[:-1]:
                     grafo_completo[i,j]=1
                     
     def ordernación_recursiva(indices_vertices_actuales):
         if len(indices_vertices_actuales)==0:
+            print('sortie vide',len(indices_vertices_actuales))
             return []
         separacion_max=-1
         indice_separacion_max=-1
@@ -68,20 +71,27 @@ def ordenar(vertices, reglas):
                 indice_separacion_max=i
         indices_vertices_inferiores=[]
         indices_vertices_superiores=[]
+        indices_vertices_no_relacionados=[]
         for i in indices_vertices_actuales:
             if grafo_completo[i,indice_separacion_max]==1:
                 indices_vertices_inferiores.append(i)
-            if grafo_completo[indice_separacion_max,i]==1:
+            elif grafo_completo[indice_separacion_max,i]==1:
                 indices_vertices_superiores.append(i)
-                
-        return ordernación_recursiva(indices_vertices_inferiores) + [indice_separacion_max] + ordernación_recursiva(indices_vertices_superiores)
+            else:
+                indices_vertices_no_relacionados.append(i)
+         
+        print(grafo_completo)   
+        print('sortie divisée',indices_vertices_actuales,indices_vertices_inferiores,len(indices_vertices_superiores),len(indices_vertices_no_relacionados))
+        return ordernación_recursiva(indices_vertices_inferiores) + [indice_separacion_max] + ordernación_recursiva(indices_vertices_superiores) + ordernación_recursiva(indices_vertices_no_relacionados)
                     
-    print(grafo_completo)
-    indices_ordenados = ordernación_recursiva(range(n))
+    relation_ordre([],0)
+    print(grafo,'\n',grafo_completo)
+    #indices_ordenados = ordernación_recursiva(range(n))
     return [vertices[i] for i in indices_ordenados]
     
     
-print(updates_list[0],instructions_list)
-ordenar(updates_list[0],instructions_list) 
+#print(updates_list[0],instructions_list)
+veritices_ordenados=ordenar(updates_list[0],instructions_list) 
+print(veritices_ordenados)
     
         
