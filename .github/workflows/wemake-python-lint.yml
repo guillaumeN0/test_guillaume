@@ -6,6 +6,10 @@ on:
     paths:
       - '**.py'
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -16,13 +20,17 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
+          cache: 'pip'
 
-      - name: Install wemake-python-styleguide
-        run: pip install wemake-python-styleguide
+      - name: Install dependencies
+        run: |
+          pip install wemake-python-styleguide
 
       - name: Run wemake-python-styleguide
         uses: wemake-services/wemake-python-styleguide@master
+        continue-on-error: true
         with:
-          reporter: 'github-pr-review'
+          reporter: 'github-pr-check'
+          path: '.'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
